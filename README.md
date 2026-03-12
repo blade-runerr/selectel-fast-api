@@ -13,10 +13,10 @@ FastAPI-приложение для парсинга публичных вака
 4. Запуск через Docker Desktop:
   `docker compose up --build`
 5. Проверка работоспособности:
-  в браузере откройте Swagger **http://localhost/docs** 
-  метрики API: **http://localhost/metrics**
-  Prometheus UI: **http://localhost/prometheus/**
-  Grafana UI: **http://localhost/grafana/** (логин/пароль по умолчанию: `admin`/`admin`)
+   - в браузере откройте Swagger: **http://localhost/docs**
+   - метрики API: **http://localhost/metrics**
+   - Prometheus UI: **http://localhost/prometheus/**
+   - Grafana UI: **http://localhost/grafana/** (логин/пароль по умолчанию: `admin`/`admin`)
 6. Остановка и очистка:
   `docker-compose down -v`
 
