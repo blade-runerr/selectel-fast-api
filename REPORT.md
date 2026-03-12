@@ -80,6 +80,8 @@
 
 После исправления основных багов я решил немного улучшить проект от себя:
 - **Тесты.** Написал unit- и integration-тесты. Они лежат в папке `tests/`: юнит-тесты в `tests/unit/`, интеграционные в `tests/integration/`, общие фикстуры  — в `tests/conftest.py`. Конкретно: проверка схем `VacancyCreate`/`VacancyUpdate` (`test_schemas_vacancy.py`), CRUD и upsert вакансий (`test_crud_vacancy.py`), парсер при `city=null` и при ошибке сети (`test_parser_service.py`), полный цикл CRUD по HTTP, дубликат `external_id` при POST и PUT, фильтры по городу и расписанию (`test_vacancies_api.py`), ручной запуск парсинга (`test_parse_api.py`). Запуск: `pytest`.
+
+
 - Подключил метрики через Prometheus и Grafana для наблюдаемости API и фонового парсинга.
 
 ## Итого
