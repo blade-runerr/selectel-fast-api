@@ -13,7 +13,7 @@ FastAPI-приложение для парсинга публичных вака
 4. Запуск через Docker Desktop:
   `docker compose up --build`
 5. Проверка работоспособности:
-  в браузере откройте **http://localhost/docs** (через nginx).
+  в браузере откройте Swagger **http://localhost/docs** 
   метрики API: **http://localhost/metrics**
   Prometheus UI: **http://localhost/prometheus/**
   Grafana UI: **http://localhost/grafana/** (логин/пароль по умолчанию: `admin`/`admin`)
@@ -39,7 +39,7 @@ FastAPI-приложение для парсинга публичных вака
 
 - При старте приложения выполняется первичный парсинг.
 - Фоновый парсинг запускается планировщиком APScheduler (в рамках заданного интервала).
-- В проект добавлена lightweight observability-связка Prometheus + Grafana.
+- В проект добавлена связка Prometheus + Grafana.
 - Для парсера экспортируются кастомные метрики: количество запусков, ошибок, длительность и число добавленных вакансий.
 
 ## Как смотреть метрики
@@ -49,7 +49,7 @@ FastAPI-приложение для парсинга публичных вака
    - `http://localhost/metrics` — сырые метрики приложения в формате Prometheus;
    - `http://localhost/prometheus/` — UI Prometheus (можно искать метрики, например `parse_runs_total`, `parse_errors_total`, `parse_duration_seconds`);
    - `http://localhost/grafana/` — UI Grafana (`admin` / `admin`).
-3. Источник данных Prometheus в Grafana создаётся автоматически при старте (provisioning).
+3. Источник данных Prometheus в Grafana создаётся автоматически при старте
 4. В Grafana можно сразу строить дашборды по метрикам приложения (`parse_runs_total`, `parse_errors_total`, `parse_duration_seconds`, `parsed_vacancies_total`).
 
 ## CI/CD
@@ -57,4 +57,32 @@ FastAPI-приложение для парсинга публичных вака
 - В репозитории добавлен workflow `CI/CD` (`.github/workflows/ci-cd.yml`).
 - CI: на `push` и `pull_request` в `main/master` запускаются `compileall` и `pytest`.
 - CD: на `push` в `main/master` собирается Docker-образ и публикуется в GHCR: `ghcr.io/<owner>/<repo>`.
+
+## Use Case диаграмма
+
+```mermaid
+flowchart LR
+  U["Пользователь / API-клиент"]
+  N["Nginx gateway"]
+
+  subgraph B["Backend (за Nginx)"]
+    A["FastAPI приложение"]
+    S["Планировщик APScheduler"]
+  end
+
+  X["Публичное API вакансий Selectel"]
+  D[PostgreSQL]
+  P[Prometheus]
+  G[Grafana]
+
+  U -->|CRUD вакансий| N
+  U -->|Ручной запуск парсинга| N
+  N --> A
+  A -->|Чтение/запись вакансий| D
+  S -->|Триггерит фоновый парсинг| A
+  A -->|Получение вакансий| X
+  A -->|Метрики /metrics| P
+  G -->|Datasource| P
+  U -->|Просмотр графиков| G
+```
 

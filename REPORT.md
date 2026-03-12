@@ -1,8 +1,7 @@
 ## Что сделано
 
-- Прочитано и разобрано задание из `python_testovoe.pdf`.
+- Прочитано и разобрано задание.
 - Найдены и исправлены баги в конфигурации, планировщике, парсере, CRUD и API.
-- Выполнены smoke-проверки импорта приложения и синтаксиса.
 
 ## Исправленные баги
 
@@ -76,13 +75,29 @@
 ![Ошибка 500 при PUT](./static/500-put-err.jpg)
 
    - Причина: в endpoint обновления не было предварительной проверки уникальности `external_id` для случая апдейта, поэтому конфликт ловился только на уровне БД (`IntegrityError`).
-   - Решение: перед обновлением добавлена явная проверка `external_id` на дубликат через `get_vacancy_by_external_id(...)`; при конфликте теперь возвращается `HTTPException(status_code=409, detail="Vacancy with external_id already exists")`.
+   - Решение: перед обновлением добавлена явная проверка `external_id` на дубликат через `get_vacancy_by_external_id(...)`. Раньше обновление выглядело так:
+
+     `return await update_vacancy(session, vacancy, payload)`
+
+     Добавил проверку:
+
+     `if payload.external_id is not None and payload.external_id != vacancy.external_id:`
+
+     `    existing = await get_vacancy_by_external_id(session, payload.external_id)`
+
+     `    if existing and existing.id != vacancy.id:`
+
+     `        raise HTTPException(status_code=409, detail="Vacancy with external_id already exists")`
+
+     `return await update_vacancy(session, vacancy, payload)`
 
 После исправления основных багов я решил немного улучшить проект от себя:
 - **Тесты.** Написал unit- и integration-тесты. Они лежат в папке `tests/`: юнит-тесты в `tests/unit/`, интеграционные в `tests/integration/`, общие фикстуры  — в `tests/conftest.py`. Конкретно: проверка схем `VacancyCreate`/`VacancyUpdate` (`test_schemas_vacancy.py`), CRUD и upsert вакансий (`test_crud_vacancy.py`), парсер при `city=null` и при ошибке сети (`test_parser_service.py`), полный цикл CRUD по HTTP, дубликат `external_id` при POST и PUT, фильтры по городу и расписанию (`test_vacancies_api.py`), ручной запуск парсинга (`test_parse_api.py`). Запуск: `pytest`.
 
 
 - Подключил метрики через Prometheus и Grafana для наблюдаемости API и фонового парсинга.
+
+- Также добавил Nginx, чтобы не торчали порты
 
 ## Итого
 
@@ -91,13 +106,13 @@
 
 ### Подтверждающие скриншоты
 
-- Успешное получение списка вакансий (`GET /api/v1/vacancies/`):
-
-![Успешный GET списка](./static/success-get-list.jpg)
-
 - Данные корректно сохраняются в БД:
 
 ![Данные в БД](./static/success-in-db.jpg)
+
+- Успешное получение списка вакансий (`GET /api/v1/vacancies/`):
+
+![Успешный GET списка](./static/success-get-list.jpg)
 
 - Успешное получение вакансии по ID (`GET /api/v1/vacancies/{id}`):
 
@@ -107,6 +122,7 @@
 
 ![POST часть 1](./static/ok-post-1.jpg)
 ![POST часть 2](./static/ok-post-2.jpg)
+
 
 - Успешное обновление вакансии (`PUT`) — длинный скрин:
 

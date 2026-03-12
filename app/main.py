@@ -1,7 +1,7 @@
 import logging
 
 from fastapi import FastAPI
-from prometheus_fastapi_instrumentator import Instrumentator  # type: ignore[import-untyped]
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.api.v1.router import api_router
 from app.core.logging import setup_logging

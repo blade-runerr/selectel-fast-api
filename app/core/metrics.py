@@ -1,4 +1,4 @@
-from prometheus_client import Counter, Histogram  # type: ignore[import-untyped]
+from prometheus_client import Counter, Histogram
 
 parse_runs_total = Counter(
     "parse_runs_total",
