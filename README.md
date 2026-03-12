@@ -52,3 +52,9 @@ FastAPI-приложение для парсинга публичных вака
 3. Источник данных Prometheus в Grafana создаётся автоматически при старте (provisioning).
 4. В Grafana можно сразу строить дашборды по метрикам приложения (`parse_runs_total`, `parse_errors_total`, `parse_duration_seconds`, `parsed_vacancies_total`).
 
+## CI/CD
+
+- В репозитории добавлен workflow `CI/CD` (`.github/workflows/ci-cd.yml`).
+- CI: на `push` и `pull_request` в `main/master` запускаются `compileall` и `pytest`.
+- CD: на `push` в `main/master` собирается Docker-образ и публикуется в GHCR: `ghcr.io/<owner>/<repo>`.
+
