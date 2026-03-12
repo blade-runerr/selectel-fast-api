@@ -13,10 +13,10 @@ FastAPI-приложение для парсинга публичных вака
 4. Запуск через Docker Desktop:
   `docker compose up --build`
 5. Проверка работоспособности:
-  в браузере откройте **http://localhost:8000/docs** (обязательно с портом `8000`, не просто localhost).
-  метрики API: **http://localhost:8000/metrics**
-  Prometheus UI: **http://localhost:9090**
-  Grafana UI: **http://localhost:3000** (логин/пароль по умолчанию: `admin`/`admin`)
+  в браузере откройте **http://localhost/docs** (через nginx).
+  метрики API: **http://localhost/metrics**
+  Prometheus UI: **http://localhost/prometheus/**
+  Grafana UI: **http://localhost/grafana/** (логин/пароль по умолчанию: `admin`/`admin`)
 6. Остановка и очистка:
   `docker-compose down -v`
 
@@ -46,9 +46,9 @@ FastAPI-приложение для парсинга публичных вака
 
 1. Запустите проект: `docker compose up --build`
 2. Откройте в браузере:
-   - `http://localhost:8000/metrics` — сырые метрики приложения в формате Prometheus;
-   - `http://localhost:9090` — UI Prometheus (можно искать метрики, например `parse_runs_total`, `parse_errors_total`, `parse_duration_seconds`);
-   - `http://localhost:3000` — UI Grafana (`admin` / `admin`).
+   - `http://localhost/metrics` — сырые метрики приложения в формате Prometheus;
+   - `http://localhost/prometheus/` — UI Prometheus (можно искать метрики, например `parse_runs_total`, `parse_errors_total`, `parse_duration_seconds`);
+   - `http://localhost/grafana/` — UI Grafana (`admin` / `admin`).
 3. Источник данных Prometheus в Grafana создаётся автоматически при старте (provisioning).
 4. В Grafana можно сразу строить дашборды по метрикам приложения (`parse_runs_total`, `parse_errors_total`, `parse_duration_seconds`, `parsed_vacancies_total`).
 
